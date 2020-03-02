@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Sign_Lang_ML</string>
+    <string name="recognition">Recognition</string>
+    <string name="training">Training</string>
+    <string name="speech_to_text">Speech-To-Text</string>
+    <string name="learning">Learning</string>
+    <string name="sign_language_ml">Sign Language ML</string>
 </resources>
+
