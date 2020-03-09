@@ -1,9 +1,50 @@
 <resources>
+
+    // Main
     <string name="app_name">Sign_Lang_ML</string>
-    <string name="recognition">Recognition</string>
-    <string name="training">Training</string>
-    <string name="speech_to_text">Speech-To-Text</string>
-    <string name="learning">Learning</string>
+    <string name="asl_alpha">American Sign Language Alphabet</string>
     <string name="sign_language_ml">ASL Assist</string>
+
+    // Recognition
+    <string name="recognition">Recognition</string>
+
+    // Training
+    <string name="training">Training</string>
+
+    // Speech-To-Text
+    <string name="speech_to_text">Speech-To-Text</string>
+
+    // Learning
+    <string name="learning">Learning</string>
+    <string name="learning_desc">Click Any Letter and View How To Sign It</string>
+    <string-array name="letters">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>I</item>
+        <item>J</item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>N</item>
+        <item>O</item>
+        <item>P</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>U</item>
+        <item>V</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
+    </string-array>
+
 </resources>
 
