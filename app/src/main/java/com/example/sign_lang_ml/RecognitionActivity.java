@@ -97,10 +97,10 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
 
 
         if (OpenCVLoader.initDebug()) {
-            Log.d(TAG, "Resume");
+            Log.d(TAG, "Connected camera.");
             baseloadercallback.onManagerConnected(BaseLoaderCallback.SUCCESS);
         } else {
-            Log.d(TAG, "other stuff");
+            Log.d(TAG, "Camera not connected.");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, baseloadercallback);
         }
 
