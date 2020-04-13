@@ -5,63 +5,72 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1198B6"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
     <Button
         android:id="@+id/recognition"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="24dp"
+        android:layout_width="159dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="48dp"
+        android:backgroundTint="#7A9EB6"
         android:text="@string/recognition"
-        app:layout_constraintBottom_toTopOf="@+id/speechtotext"
-        app:layout_constraintEnd_toEndOf="@+id/speechtotext"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/training"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="24dp"
-        android:text="@string/training"
-        app:layout_constraintBottom_toTopOf="@+id/learning"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/learning" />
-
-    <Button
-        android:id="@+id/speechtotext"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="252dp"
-        android:text="@string/speech_to_text"
+        android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/learning"
-        app:layout_constraintHorizontal_bias="0.506"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.444" />
 
     <Button
         android:id="@+id/learning"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginBottom="252dp"
+        android:layout_width="159dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="64dp"
+        android:backgroundTint="#7A9EB6"
         android:text="@string/learning"
+        android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/recognition"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.044" />
 
     <TextView
         android:id="@+id/mainmenu_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="373dp"
+        android:layout_height="84dp"
         android:fontFamily="serif"
         android:text="@string/sign_language_ml"
-        android:textSize="60sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="#254469"
+        android:textSize="75sp"
+        app:layout_constraintBottom_toTopOf="@+id/asl_assist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.167" />
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="298dp"
+        android:layout_height="279dp"
+        android:layout_marginBottom="224dp"
+        android:contentDescription="@string/sign_language_ml"
+        android:src="@drawable/logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/asl_assist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="@string/asl_assistant"
+        android:textSize="21sp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

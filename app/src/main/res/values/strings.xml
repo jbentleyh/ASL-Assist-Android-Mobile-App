@@ -4,6 +4,7 @@
     <string name="app_name">Sign_Lang_ML</string>
     <string name="asl_alpha">American Sign Language Alphabet</string>
     <string name="sign_language_ml">ASL Assist</string>
+    <string name="asl_assistant">American Sign Language Assistant</string>
 
     // Recognition
     <string name="recognition">Recognition</string>
