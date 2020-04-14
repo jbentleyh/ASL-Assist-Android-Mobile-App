@@ -6,8 +6,8 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="8"
-8-->C:\Users\janse\Desktop\Edu-Career\USM\CSC 424 Software Engineering 2\project\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+8-->B:\Code\school\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
 9        android:targetSdkVersion="29" />
-9-->C:\Users\janse\Desktop\Edu-Career\USM\CSC 424 Software Engineering 2\project\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+9-->B:\Code\school\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
 10
 11</manifest>
