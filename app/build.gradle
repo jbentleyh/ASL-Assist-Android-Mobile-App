@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
+    aaptOptions {
+        noCompress "tflite"
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {

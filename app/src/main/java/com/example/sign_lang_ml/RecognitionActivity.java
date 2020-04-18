@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.content.res.AssetFileDescriptor;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -16,6 +17,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvException;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
@@ -28,16 +30,37 @@ import org.tensorflow.lite.support.image.ops.ResizeOp;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 import org.tensorflow.lite.support.model.Model;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.ByteOrder;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.concurrent.RunnableFuture;
+import java.util.List;
+import java.util.ArrayList;
 
 
 public class RecognitionActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-    JavaCameraView javaCameraView;
+    CameraBridgeViewBase javaCameraView;
     Mat mRGBA, mRGBAT;
+    private MappedByteBuffer tfliteModel;
+    private Interpreter tflite;
+    private final Interpreter.Options tfliteOptions = new Interpreter.Options();
+    private List<String> labels;
+    private ByteBuffer imgData = null;
+    private int[] imgValues;
+    private float[][] probabilities = null;
+    private String result = null;
+    private String displayString = null;
+
+    private static int IMG_SIZE = 80;
+    private static final int IMG_MEAN = 128;
+    private static final float IMG_STD = 128.0f;
     private static String TAG = "RecognitionActivity";
 
     BaseLoaderCallback baseloadercallback = new BaseLoaderCallback(RecognitionActivity.this) {
@@ -57,12 +80,92 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         }
     };
 
+    private List<String> loadLabels() throws IOException {
+        List<String> labels = new ArrayList<String>();
+        BufferedReader r = new BufferedReader(new InputStreamReader(this.getAssets().open("labels.txt")));
+        String line;
+        while ((line = r.readLine()) != null) {
+            labels.add(line);
+        }
+        r.close();
+        return labels;
+    }
+
+    private void convertMatToByteBuffer(Mat mat) {
+        if (imgData == null) {
+            return;
+        }
+
+        imgData.rewind();
+        byte[] buffer = new byte[(int) mat.total() * mat.channels()];
+        int pixel = 0;
+        for (int i = 0; i < IMG_SIZE; ++i) {
+            for (int j = 0; j < IMG_SIZE; ++j) {
+                Log.d(TAG, "i: " + i + " j: " + j + " Pixel: " + pixel + " Remaining: " + imgData.remaining());
+                final int val = buffer[pixel++];
+                //Quantized model behaving as non quantized model??
+                imgData.putFloat((((val) & 0xFF) - IMG_MEAN) / IMG_STD);
+                Log.d(TAG, "Value: " + val);
+                //imgData.put((byte) (val & 0xFF));
+            }
+        }
+    }
+
+    /*
+     * Passes camera capture through Canny edge detection algorithm
+     * Resizes result to fit tensor graph
+     */
+    private Mat processFrame(Mat frame) {
+        Mat edges = new Mat(frame.size(), CvType.CV_8UC1);
+        Imgproc.cvtColor(frame, edges, Imgproc.COLOR_RGB2GRAY, 4);
+        Imgproc.Canny(edges, edges, 100, 200);
+        Imgproc.resize(edges, edges, new Size(IMG_SIZE, IMG_SIZE));
+        return edges;
+    }
+
+    /*
+    * Passes the processed frame to tensor graph
+    */
+    private void generateProbabilities(Mat frame) {
+        convertMatToByteBuffer(frame);
+        tflite.run(imgData, probabilities);
+
+    }
+
+    /*
+    * Takes the category with highest average probability over last n frames
+    * if result is different from previous result, append it to display text
+    * else return
+    */
+    private void displayResult() {
+        int max = 0;
+        for (int i = 1; i < labels.size(); ++i) {
+            if (probabilities[0][i] > probabilities[0][max]) {
+                max = i;
+            }
+        }
+        Log.d(TAG, "Guess: " + max + " " + labels.get(max));
+        //Finish  displayResult
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recognition);
+        try {
+            tfliteModel = FileUtil.loadMappedFile(this, "quantizedModel.tflite");
+            tflite = new Interpreter(tfliteModel);
+            labels = loadLabels();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-        javaCameraView = (JavaCameraView) findViewById(R.id.my_camera_view);
+        imgData = ByteBuffer.allocateDirect( 4 * IMG_SIZE * IMG_SIZE );
+        imgData.order(ByteOrder.nativeOrder());
+        imgValues = new int[IMG_SIZE * IMG_SIZE];
+        probabilities = new float[1][labels.size()];
+
+        javaCameraView = (CameraBridgeViewBase) findViewById(R.id.my_camera_view);
         javaCameraView.setVisibility(SurfaceView.VISIBLE);
         javaCameraView.setCvCameraViewListener(RecognitionActivity.this);
     }
@@ -80,51 +183,23 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
 
-        // We should keep only image processing here i think
-        // move conversion and actual interpretation to another function?
-        // also consider using a to call this function?
-
         mRGBA = inputFrame.rgba();
         mRGBAT = mRGBA.t();
         Core.flip(mRGBA.t(), mRGBAT, 1);
         Imgproc.resize(mRGBAT, mRGBAT, mRGBA.size());
 
-        ImageProcessor imageProcessor =
-                new ImageProcessor.Builder()
-                        .add(new ResizeOp(80, 80, ResizeOp.ResizeMethod.BILINEAR))
-                        .build();
+        Mat frame = processFrame(mRGBAT);
+        generateProbabilities(frame);
+        displayResult();
 
-        TensorImage tImage = new TensorImage(DataType.UINT8);
-
-        Bitmap bmp = null;
-        Mat tmp = new Mat (80, 80, CvType.CV_8U, new Scalar(4));
-        try {
-            Imgproc.cvtColor(mRGBAT, tmp, Imgproc.COLOR_GRAY2RGBA, 4);
-            bmp = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
-            Utils.matToBitmap(tmp, bmp);
-        }
-        catch (CvException e){Log.d("Exception",e.getMessage());}
-
-        tImage.load(bmp);
-        tImage = imageProcessor.process(tImage);
-
-        TensorBuffer probabilityBuffer = TensorBuffer.createFixedSize(new int[]{1, 1001}, DataType.UINT8);
-        File tfmodel_file = new File("sign_language.tflite");
-        Interpreter tflite = new Interpreter(tfmodel_file);
-
-        if(null != tflite) {
-            tflite.run(tImage.getBuffer(), probabilityBuffer.getBuffer());
-        }
-
-        tflite.close();
-        return mRGBAT;
+        System.gc();
+        return frame;
     }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
-
 
     @Override
     protected void onDestroy() {
