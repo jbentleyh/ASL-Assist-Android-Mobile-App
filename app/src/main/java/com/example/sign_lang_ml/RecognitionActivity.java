@@ -28,6 +28,9 @@ import org.tensorflow.lite.support.image.ImageProcessor;
 import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.image.ops.ResizeOp;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+import org.tensorflow.lite.support.common.TensorProcessor;
+import org.tensorflow.lite.support.label.TensorLabel;
+import org.tensorflow.lite.support.common.ops.NormalizeOp;
 import org.tensorflow.lite.support.model.Model;
 
 import java.io.BufferedReader;
@@ -41,6 +44,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.RunnableFuture;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 
 
@@ -54,6 +58,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
     private List<String> labels;
     private ByteBuffer imgData = null;
     private int[] imgValues;
+    TensorBuffer probabilityBuffer = null;
     private float[][] probabilities = null;
     private String result = null;
     private String displayString = null;
@@ -61,6 +66,10 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
     private static int IMG_SIZE = 80;
     private static final int IMG_MEAN = 128;
     private static final float IMG_STD = 128.0f;
+
+    private static final String MODEL = "quantizedModel.tflite";
+    private static final String LABEL = "labels.txt";
+
     private static String TAG = "RecognitionActivity";
 
     BaseLoaderCallback baseloadercallback = new BaseLoaderCallback(RecognitionActivity.this) {
@@ -82,7 +91,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
 
     private List<String> loadLabels() throws IOException {
         List<String> labels = new ArrayList<String>();
-        BufferedReader r = new BufferedReader(new InputStreamReader(this.getAssets().open("labels.txt")));
+        BufferedReader r = new BufferedReader(new InputStreamReader(this.getAssets().open(LABEL)));
         String line;
         while ((line = r.readLine()) != null) {
             labels.add(line);
@@ -115,12 +124,24 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
      * Passes camera capture through Canny edge detection algorithm
      * Resizes result to fit tensor graph
      */
-    private Mat processFrame(Mat frame) {
+    private TensorImage processFrame(Mat frame) {
         Mat edges = new Mat(frame.size(), CvType.CV_8UC1);
         Imgproc.cvtColor(frame, edges, Imgproc.COLOR_RGB2GRAY, 4);
         Imgproc.Canny(edges, edges, 100, 200);
         Imgproc.resize(edges, edges, new Size(IMG_SIZE, IMG_SIZE));
-        return edges;
+
+        ImageProcessor imageProcessor = new ImageProcessor.Builder()
+                .add(new ResizeOp(80, 80, ResizeOp.ResizeMethod.BILINEAR))
+                .build();
+        TensorImage tImage = new TensorImage(DataType.UINT8);
+        Bitmap bmp = Bitmap.createBitmap(edges.cols(), edges.rows(), Bitmap.Config.ALPHA_8);
+        //Breaks here https://answers.opencv.org/question/46011/unable-to-convert-mat-to-bitmap/
+        //edges is already grayscale though
+        Utils.matToBitmap(edges, bmp);
+
+        tImage.load(bmp);
+        tImage = imageProcessor.process(tImage);
+        return tImage;
     }
 
     /*
@@ -155,15 +176,18 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         try {
             tfliteModel = FileUtil.loadMappedFile(this, "quantizedModel.tflite");
             tflite = new Interpreter(tfliteModel);
-            labels = loadLabels();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            //File tfModel = new File(MODEL);
+            labels = FileUtil.loadLabels(this, LABEL);
+            //labels = loadLabels();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
         }
 
-        imgData = ByteBuffer.allocateDirect( 4 * IMG_SIZE * IMG_SIZE );
-        imgData.order(ByteOrder.nativeOrder());
-        imgValues = new int[IMG_SIZE * IMG_SIZE];
-        probabilities = new float[1][labels.size()];
+        probabilityBuffer = TensorBuffer.createFixedSize(new int[] {1, labels.size()}, DataType.FLOAT32);
+        //imgData = ByteBuffer.allocateDirect( 4 * IMG_SIZE * IMG_SIZE );
+        //imgData.order(ByteOrder.nativeOrder());
+        //imgValues = new int[IMG_SIZE * IMG_SIZE];
+        //probabilities = new float[1][labels.size()];
 
         javaCameraView = (CameraBridgeViewBase) findViewById(R.id.my_camera_view);
         javaCameraView.setVisibility(SurfaceView.VISIBLE);
@@ -188,12 +212,31 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         Core.flip(mRGBA.t(), mRGBAT, 1);
         Imgproc.resize(mRGBAT, mRGBAT, mRGBA.size());
 
-        Mat frame = processFrame(mRGBAT);
-        generateProbabilities(frame);
-        displayResult();
+        TensorImage tImage = processFrame(mRGBAT);
+        if (tflite != null) {
+            tflite.run(tImage.getBuffer(), probabilityBuffer.getBuffer());
+        }
 
-        System.gc();
-        return frame;
+        TensorProcessor probabilityProcessor =
+                new TensorProcessor.Builder().add(new NormalizeOp(0, 255)).build();
+
+        if (null != labels) {
+            // Map of labels and their corresponding probability
+            TensorLabel l = new TensorLabel(labels,
+                    probabilityProcessor.process(probabilityBuffer));
+
+            // Create a map to access the result based on label
+            Map<String, Float> floatMap = l.getMapWithFloatValue();
+            int max = 0;
+            for (int i = 1; i < labels.size(); i++) {
+                if (floatMap.get(i) > floatMap.get(max)) {
+                    max = i;
+                }
+            }
+            Log.d(TAG, "Guess: " + labels.get(max) + " Certainty: " + floatMap.get(max));
+        }
+
+        return mRGBAT;
     }
 
     @Override
