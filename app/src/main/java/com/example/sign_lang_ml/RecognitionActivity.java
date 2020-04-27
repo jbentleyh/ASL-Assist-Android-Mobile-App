@@ -13,9 +13,11 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -66,29 +68,37 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final FrameLayout layout = new FrameLayout(this);
-        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        setContentView(layout);
+//        final FrameLayout layout = new FrameLayout(this);
+//        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        setContentView(R.layout.activity_recognition);
 
-        openCvCameraView = new JavaCameraView(this, mCameraIndex);
+        openCvCameraView = findViewById(R.id.my_camera_view);
+//        openCvCameraView = new JavaCameraView(this, mCameraIndex);
         openCvCameraView.setCvCameraViewListener(RecognitionActivity.this);
         openCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        openCvCameraView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        layout.addView(openCvCameraView);
+//        openCvCameraView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+//        layout.addView(openCvCameraView);
 
-        bt = new Button(this);
-        bt.setText("Debug");
+        bt = findViewById(R.id.debugbtn);
+//        bt = new Button(this);
+//        bt.setText("Debug");
         bt.setId(7);
-        bt.getBackground().setAlpha(64);
-        bt.setOnClickListener(this);
-        bt.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-        layout.addView(bt);
+//        bt.getBackground().setAlpha(64);
+//        bt.setOnClickListener(this);
+//        bt.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+//        layout.addView(bt);
 
-        tv = new TextView(this);
+//        final LinearLayout ll = new LinearLayout(this);
+//        ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL));
+//        ll.setBackgroundColor(Color.WHITE);
+//        layout.addView(ll);
+
+        tv = findViewById(R.id.outputBox);
+//        tv = new TextView(this);
         tv.setTextColor(Color.BLACK);
         tv.setTextSize(20f);
-        tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.CENTER_HORIZONTAL+Gravity.BOTTOM));
-        layout.addView(tv);
+//        tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.CENTER_HORIZONTAL+Gravity.BOTTOM));
+//        layout.addView(tv);
     }
 
     @Override
