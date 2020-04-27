@@ -19,28 +19,23 @@ import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.util.List;
 
-public class Classifier {
+class Classifier {
     private static final String TAG = "Tflite";
     private static final String MODEL = "mobilenet.tflite";
     private static final String LABEL = "labels.txt";
-    private static final int  DIM_HEIGHT = 80;
+    private static final int DIM_HEIGHT = 80;
     private static final int DIM_WIDTH = 80;
-    private static final int BYTES =4;
-
-    private MappedByteBuffer tfliteModel;
-    private final Interpreter.Options tfliteOptions = new Interpreter.Options();
-
-    protected Interpreter tflite;
-    protected List<String> labels;
-
+    private static final int BYTES = 4;
     private static String result;
     private static float probability;
-
-    protected ByteBuffer imgData = null;
-    private float[][] probArray = null;
+    private Interpreter tflite;
+    private List<String> labels;
+    private ByteBuffer imgData;
+    private float[][] probArray;
 
     Classifier(Activity activity) throws IOException {
-        tfliteModel = FileUtil.loadMappedFile(activity, MODEL);
+        MappedByteBuffer tfliteModel = FileUtil.loadMappedFile(activity, MODEL);
+        Interpreter.Options tfliteOptions = new Interpreter.Options();
         tfliteOptions.setNumThreads(4);
         tflite = new Interpreter(tfliteModel, tfliteOptions);
         labels = FileUtil.loadLabels(activity, LABEL);
@@ -49,40 +44,43 @@ public class Classifier {
         probArray = new float[1][labels.size()];
     }
 
-    public void classifyMat(Mat mat) {
-        if (tflite !=  null) {
+    void classifyMat(Mat mat) {
+        if (tflite != null) {
             convertMatToByteBuffer(mat);
             runInterface();
         }
     }
 
-    public String getResult() {
+    String getResult() {
         return result;
     }
 
-    public float getProbability() {
+    float getProbability() {
         return probability;
     }
 
-    public void close() {
-        if(tflite != null) {
+    void close() {
+        if (tflite != null) {
             tflite.close();
             tflite = null;
         }
     }
 
-    public Mat processMat(Mat mat) {
+    Mat processMat(Mat mat) {
         float mh = mat.height();
-        float cw  = (float) Resources.getSystem().getDisplayMetrics().widthPixels;
-        float scale = mh/cw*0.7f;
-        Rect roi = new Rect((int)(mat.cols()/2 - (mat.cols()*scale/2)), (int)(mat.rows() / 2 - (mat.cols()*scale/2)), (int)(mat.cols()*scale), (int)(mat.cols()*scale));
+        float cw = (float) Resources.getSystem().getDisplayMetrics().widthPixels;
+        float scale = mh / cw * 0.7f;
+        Rect roi = new Rect((int) (mat.cols() / 2 - (mat.cols() * scale / 2)),
+                (int) (mat.rows() / 2 - (mat.cols() * scale / 2)),
+                (int) (mat.cols() * scale),
+                (int) (mat.cols() * scale));
         Mat sub = mat.submat(roi);
         sub.copyTo(mat.submat(roi));
 
         Mat edges = new Mat(sub.size(), CvType.CV_8UC1);
         Imgproc.Canny(sub, edges, 100, 200);
 
-        Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(3,3));
+        Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(3, 3));
         Imgproc.dilate(edges, edges, element1);
         //Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(2,2));
         //Imgproc.erode(edges, edges, element);
@@ -92,12 +90,24 @@ public class Classifier {
         return edges;
     }
 
+    Mat debugMat(Mat mat) {
+
+        Mat edges = new Mat(mat.size(), CvType.CV_8UC1);
+        Imgproc.Canny(mat, edges, 100, 200);
+
+        Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(3, 3));
+        Imgproc.dilate(edges, edges, element1);
+        //Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(2,2));
+        //Imgproc.erode(edges, edges, element);
+
+        return edges;
+    }
+
     private void convertMatToByteBuffer(Mat mat) {
         imgData.rewind();
-        int pixel = 0;
         for (int i = 0; i < DIM_HEIGHT; ++i) {
             for (int j = 0; j < DIM_WIDTH; ++j) {
-                imgData.putFloat((float)mat.get(i,j)[0]);
+                imgData.putFloat((float) mat.get(i, j)[0]);
             }
         }
     }

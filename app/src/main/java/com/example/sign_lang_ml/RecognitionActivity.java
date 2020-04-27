@@ -1,64 +1,76 @@
 package com.example.sign_lang_ml;
 
-
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Scroller;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.core.CvException;
+import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class RecognitionActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2, View.OnClickListener {
 
-    private JavaCameraView openCvCameraView;
-    private static String TAG = "RecognitionActivity";
-    private int mCameraIndex = 0;
-    private Mat mRGBA;
-    private Mat intermediate;
-    private Mat CNN_input;
-    private Classifier classifier;
-    private int CAMERA = 10;
+    private static final int BUTTON_SIZE = 80;
+    private static final int CLASSIFY_INTERVAL = 20;
+    private static final String CAPTURE_BUTTON = "captureButton.png";
+    private static final String DEBUG_BUTTON = "debugButton.png";
+    private static final String EDGE_BUTTON = "edgeButton.png";
+    private static final String HELP_BUTTON = "helpButton.png";
+    private static final String SAVE_BUTTON = "saveButton.png";
+    private static final String TAG = "RecognitionActivity";
 
-    private Button bt;
-    private TextView tv;
+    private Classifier classifier;
     private Mat frame;
+    private Mat mRGBA;
+    private JavaCameraView openCvCameraView;
+
+    private LinearLayout buttonLayout;
+    private LinearLayout debugLayout;
+    private TextView probTextView;
+    private TextView resultTextView;
+    private AlertDialog dialog;
+
+    private Boolean isDebug = false;
+    private Boolean isEdge = false;
+    private Boolean isSave = false;
+
     private String text = "";
+    private int counter = 0;
 
     private BaseLoaderCallback baseloadercallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             super.onManagerConnected(status);
-            switch(status) {
-                case BaseLoaderCallback.SUCCESS: {
-                    openCvCameraView.enableView();
-                    break;
-                }
-                default: {
-                    super.onManagerConnected(status);
-                    break;
-                }
-            }
+            if (status == BaseLoaderCallback.SUCCESS)
+                openCvCameraView.enableView();
+            else
+                super.onManagerConnected(status);
         }
     };
 
@@ -67,28 +79,67 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         super.onCreate(savedInstanceState);
 
         final FrameLayout layout = new FrameLayout(this);
-        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
         setContentView(layout);
 
+        int mCameraIndex = 0;
         openCvCameraView = new JavaCameraView(this, mCameraIndex);
         openCvCameraView.setCvCameraViewListener(RecognitionActivity.this);
         openCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        openCvCameraView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        openCvCameraView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
         layout.addView(openCvCameraView);
 
-        bt = new Button(this);
-        bt.setText("Debug");
-        bt.setId(7);
-        bt.getBackground().setAlpha(64);
-        bt.setOnClickListener(this);
-        bt.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-        layout.addView(bt);
+        buttonLayout = new LinearLayout(this);
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+        debugLayout = new LinearLayout(this);
+        debugLayout.setOrientation(LinearLayout.HORIZONTAL);
+        debugLayout.setVisibility(View.INVISIBLE);
 
-        tv = new TextView(this);
-        tv.setTextColor(Color.WHITE);
-        tv.setTextSize(20f);
-        tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.TOP+Gravity.LEFT));
-        layout.addView(tv);
+        debugLayout.addView(createButton(CAPTURE_BUTTON));
+        debugLayout.addView(createButton(SAVE_BUTTON));
+        debugLayout.addView(createButton(EDGE_BUTTON));
+        buttonLayout.addView(debugLayout);
+        buttonLayout.addView(createButton(DEBUG_BUTTON));
+        buttonLayout.addView(createButton(HELP_BUTTON));
+        buttonLayout.setPadding(25, 25, 25, 25);
+        buttonLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM + Gravity.END));
+        layout.addView(buttonLayout);
+
+        resultTextView = new TextView(this);
+        resultTextView.setTextColor(Color.WHITE);
+        resultTextView.setTextSize(20f);
+        resultTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP + Gravity.CENTER_HORIZONTAL));
+        layout.addView(resultTextView);
+
+        probTextView = new TextView(this);
+        probTextView.setTextColor(Color.WHITE);
+        probTextView.setTextSize(20f);
+        probTextView.setPadding(0, 0, 0, BUTTON_SIZE + 150);
+        probTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM + Gravity.CENTER_HORIZONTAL));
+        layout.addView(probTextView);
+
+        dialog = new AlertDialog.Builder(this)
+                .setTitle("Help")
+                .setMessage("Make sure sign is fully inside green box.  For best results, use in a well lit area with an empty background.")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        int windowVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+                        getWindow().getDecorView().setSystemUiVisibility(windowVisibility);
+                    }
+                })
+                .create();
     }
 
     @Override
@@ -106,9 +157,6 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         int windowVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            windowVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
-        }
         getWindow().getDecorView().setSystemUiVisibility(windowVisibility);
 
         try {
@@ -142,69 +190,152 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
     @Override
     public void onCameraViewStarted(int width, int height) {
         mRGBA = new Mat();
-        intermediate = new Mat();
-        CNN_input = new Mat();
     }
 
     @Override
     public void onCameraViewStopped() {
-        if (mRGBA != null) {
-            mRGBA.release();
-        }
-        if (intermediate != null) {
-            intermediate.release();
-        }
-        if (CNN_input != null) {
-            CNN_input.release();
-        }
+        if (mRGBA != null) mRGBA.release();
     }
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         float mh = mRGBA.height();
-        float cw  = (float) Resources.getSystem().getDisplayMetrics().widthPixels;
-        float scale = mh/cw*0.7f;
+        float cw = (float) Resources.getSystem().getDisplayMetrics().widthPixels;
+        float scale = mh / cw * 0.7f;
 
         mRGBA = inputFrame.rgba();
-        Imgproc.rectangle(mRGBA,
-                new Point(mRGBA.cols()/2 - (mRGBA.cols()*scale/2), mRGBA.rows() / 2 - (mRGBA.cols()*scale/2)),
-                new Point(mRGBA.cols() / 2 + (mRGBA.cols()*scale/2), mRGBA.rows() / 2 + (mRGBA.cols()*scale/2)),
-                new Scalar(0,255,0),1);
-
         frame = classifier.processMat(mRGBA);
+
+        if (!isDebug) {
+            if (counter == CLASSIFY_INTERVAL) {
+                runInterpreter();
+                counter = 0;
+            } else {
+                counter++;
+            }
+        }
+
+        Imgproc.rectangle(mRGBA,
+                new Point(mRGBA.cols() / 2f - (mRGBA.cols() * scale / 2),
+                        mRGBA.rows() / 2f - (mRGBA.cols() * scale / 2)),
+                new Point(mRGBA.cols() / 2f + (mRGBA.cols() * scale / 2),
+                        mRGBA.rows() / 2f + (mRGBA.cols() * scale / 2)),
+                new Scalar(0, 255, 0), 1);
+        if (isEdge) {
+            mRGBA = classifier.debugMat(mRGBA);
+        }
+
         System.gc();
         return mRGBA;
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case 7:
-                if (classifier != null) {
-                    Bitmap bmp = null;
-                    try {
-                        //bmp = Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.ARGB_8888);
-                        //Utils.matToBitmap(frame, bmp);
-                        //MediaStore.Images.Media.insertImage(getContentResolver(), bmp, "test", "test");
-                        if (classifier != null) {
-                            classifier.classifyMat(frame);
-                            if (classifier.getResult() == "SPACE")
-                                text += " ";
-                            else if (classifier.getResult() == "BACKSPACE")
-                                text = text.substring(0, text.length()-1);
-                            else if (classifier.getResult() == "NOTHING")
-                                text = text;
-                            else
-                                text += classifier.getResult();
-                            tv.setText(text);
-                            Log.d(TAG, "Guess: " + classifier.getResult() + " Probability: " + classifier.getProbability());
-                        }
-                    } catch (CvException e) {
-                        Log.d(TAG, "" + e);
+        switch ((String) view.getTag()) {
+            case HELP_BUTTON:
+                dialog.show();
+                TextView textView = dialog.findViewById(android.R.id.message);
+                assert textView != null;
+                textView.setScroller(new Scroller(this));
+                textView.setVerticalScrollBarEnabled(true);
+                textView.setMovementMethod(new ScrollingMovementMethod());
+                break;
+            case SAVE_BUTTON:
+                isSave = !isSave;
+                setButton(SAVE_BUTTON, isSave);
+                break;
+            case EDGE_BUTTON:
+                isEdge = !isEdge;
+                setButton(EDGE_BUTTON, isEdge);
+                break;
+            case DEBUG_BUTTON:
+                isDebug = !isDebug;
+                if (isDebug) {
+                    debugLayout.setVisibility(View.VISIBLE);
+                    probTextView.setVisibility(View.VISIBLE);
+                } else {
+                    isSave = false;
+                    setButton(SAVE_BUTTON, false);
+                    isEdge = false;
+                    setButton(EDGE_BUTTON, false);
+                    debugLayout.setVisibility(View.INVISIBLE);
+                    probTextView.setVisibility(View.INVISIBLE);
+                }
+                setButton(DEBUG_BUTTON, isDebug);
+                break;
+            case CAPTURE_BUTTON:
+                try {
+                    runInterpreter();
+                    String t = "Probability: " + classifier.getProbability();
+                    probTextView.setText(t);
+                    if (isSave) {
+                        Bitmap bmp = Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.ARGB_8888);
+                        Utils.matToBitmap(frame, bmp);
+                        MediaStore.Images.Media.insertImage(getContentResolver(), bmp,
+                                classifier.getResult(), "" + classifier.getProbability());
                     }
+                } catch (Exception e) {
+                    Log.d(TAG, "" + e);
                 }
                 break;
         }
     }
 
+    private ImageButton createButton(String tag) {
+        ImageButton button = new ImageButton(this);
+        button.setTag(tag);
+
+        try {
+            InputStream stream = getAssets().open(tag);
+            Bitmap bmp = BitmapFactory.decodeStream(stream);
+            button.setImageBitmap(Bitmap.createScaledBitmap(bmp, BUTTON_SIZE, BUTTON_SIZE, false));
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+        }
+
+        button.setPadding(25, 25, 25, 25);
+        button.getBackground().setAlpha(0);
+        button.setOnClickListener(this);
+        return button;
+    }
+
+    private void setButton(String tag, Boolean isOn) {
+        String path = tag;
+        if (isOn) {
+            path = path.substring(0, path.length() - 4) + "On.png";
+        }
+        try {
+            InputStream stream = getAssets().open(path);
+            Bitmap bmp = BitmapFactory.decodeStream(stream);
+            ImageButton button = buttonLayout.findViewWithTag(tag);
+            button.setImageBitmap(Bitmap.createScaledBitmap(bmp, 80, 80, false));
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+        }
+    }
+
+    private void runInterpreter() {
+        if (classifier != null) {
+            classifier.classifyMat(frame);
+            switch (classifier.getResult()) {
+                case "SPACE":
+                    text += " ";
+                    break;
+                case "BACKSPACE":
+                    text = text.substring(0, text.length() - 1);
+                    break;
+                case "NOTHING":
+                    break;
+                default:
+                    text += classifier.getResult();
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    resultTextView.setText(text);
+                }
+            });
+            Log.d(TAG, "Guess: " + classifier.getResult() + " Probability: " + classifier.getProbability());
+        }
+    }
 }
