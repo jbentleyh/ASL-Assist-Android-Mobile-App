@@ -9,7 +9,42 @@
     <org.opencv.android.JavaCameraView
         android:id="@+id/my_camera_view"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        />
+        android:layout_height="fill_parent" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="#FFFFFF"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/outputBox"
+                    android:layout_width="381dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="test" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="141dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-2dp"
+        android:visibility="visible">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

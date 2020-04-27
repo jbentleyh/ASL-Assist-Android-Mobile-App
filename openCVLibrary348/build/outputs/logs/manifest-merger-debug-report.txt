@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:2:1-7:12
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:2:1-7:12
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:2:1-7:12
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:2:1-7:12
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:2:1-7:12
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:2:1-7:12
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:2:1-7:12
+ADDED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:2:1-7:12
 	package
-		ADDED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:3:7-27
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
+		ADDED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:3:7-27
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:5:7-34
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
+		ADDED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:5:7-34
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml:4:7-33
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
+		ADDED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml:4:7-33
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
 uses-sdk
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-		ADDED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-		ADDED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
-		INJECTED from /mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Jeffery\school\424\SignLangML_Android_Mobile_App\openCVLibrary348\src\main\AndroidManifest.xml

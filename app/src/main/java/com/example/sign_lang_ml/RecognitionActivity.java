@@ -85,9 +85,9 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         layout.addView(bt);
 
         tv = new TextView(this);
-        tv.setTextColor(Color.WHITE);
+        tv.setTextColor(Color.BLACK);
         tv.setTextSize(20f);
-        tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.TOP+Gravity.LEFT));
+        tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.CENTER_HORIZONTAL+Gravity.BOTTOM));
         layout.addView(tv);
     }
 
@@ -196,6 +196,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
                                 text = text;
                             else
                                 text += classifier.getResult();
+                            tv.findViewById(R.id.outputBox);
                             tv.setText(text);
                             Log.d(TAG, "Guess: " + classifier.getResult() + " Probability: " + classifier.getProbability());
                         }
