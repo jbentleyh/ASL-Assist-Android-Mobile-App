@@ -115,3 +115,6 @@ Jeffrey Files     [GitHub](https://github.com/jjfiles)
 Jansen Howell     [GitHub](https://github.com/jbentleyh)
 
 Joseph Daughdrill [GitHub](https://github.com/jdaughd2)
+
+[Documentation](https://jbentleyh.github.io/ASL-Assist-Docs/)
+
