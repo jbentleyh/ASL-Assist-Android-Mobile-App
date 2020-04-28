@@ -9,6 +9,19 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/training"
+        android:layout_width="159dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="124dp"
+        android:backgroundTint="#7A9EB6"
+        android:text="@string/training"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recognition"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
         android:id="@+id/recognition"
         android:layout_width="159dp"
         android:layout_height="71dp"

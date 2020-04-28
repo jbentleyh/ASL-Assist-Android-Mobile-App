@@ -18,13 +18,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.util.List;
+import java.util.Random;
 
 class Classifier {
     private static final String TAG = "Tflite";
-    private static final String MODEL = "mobilenet.tflite";
+    private static final String MODEL = "mobilenet2.tflite";
     private static final String LABEL = "labels.txt";
-    private static final int DIM_HEIGHT = 80;
-    private static final int DIM_WIDTH = 80;
+    private static final int DIM_HEIGHT = 100;
+    private static final int DIM_WIDTH = 100;
     private static final int BYTES = 4;
     private static String result;
     private static float probability;
@@ -78,7 +79,7 @@ class Classifier {
         sub.copyTo(mat.submat(roi));
 
         Mat edges = new Mat(sub.size(), CvType.CV_8UC1);
-        Imgproc.Canny(sub, edges, 100, 200);
+        Imgproc.Canny(sub, edges, 50, 200);
 
         Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(3, 3));
         Imgproc.dilate(edges, edges, element1);
@@ -93,7 +94,7 @@ class Classifier {
     Mat debugMat(Mat mat) {
 
         Mat edges = new Mat(mat.size(), CvType.CV_8UC1);
-        Imgproc.Canny(mat, edges, 100, 200);
+        Imgproc.Canny(mat, edges, 50, 200);
 
         Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(3, 3));
         Imgproc.dilate(edges, edges, element1);
@@ -103,11 +104,20 @@ class Classifier {
         return edges;
     }
 
+    String getRandomLabel() {
+        Random r = new Random();
+        String rt = "";
+        while (rt.equals("") || rt.equals("NOTHING"))
+            rt = labels.get(r.nextInt(labels.size()));
+        return rt;
+    }
+
     private void convertMatToByteBuffer(Mat mat) {
         imgData.rewind();
         for (int i = 0; i < DIM_HEIGHT; ++i) {
             for (int j = 0; j < DIM_WIDTH; ++j) {
-                imgData.putFloat((float) mat.get(i, j)[0]);
+                Log.d(TAG, "" + mat.get(i, j)[0]);
+                imgData.putFloat((float) mat.get(i, j)[0] / 255.0f);
             }
         }
     }
@@ -117,6 +127,9 @@ class Classifier {
             tflite.run(imgData, probArray);
         }
         processResults(probArray[0]);
+        for (int i = 0; i < labels.size(); i++) {
+            Log.d(TAG, labels.get(i) + ": " + probArray[0][i]);
+        }
         Log.d(TAG, "Guess: " + getResult());
     }
 
@@ -127,7 +140,12 @@ class Classifier {
                 max = i;
             }
         }
-        result = labels.get(max);
-        probability = prob[max];
+        if (prob[max] > 0.8f) {
+            result = labels.get(max);
+            probability = prob[max];
+        } else {
+            result = "NOTHING";
+            probability = 1.0f;
+        }
     }
 }
