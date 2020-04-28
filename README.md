@@ -22,7 +22,7 @@ Installation
 Installing the Python Model
 ---
 
-To get started, let's clone the Python model [repository](https://github.com/jbentleyh/Sign_Language_ML).
+To get started, let's clone the Python model [repository](https://github.com/jbentleyh/ASL-Machine-Learning).
 
 The Python model repository comes packed with many different useful features. The repository allows you to create, train, and test a machine learning model from scratch or easily import a pre-existing model. The repository also allows you to generate your own dataset or import a pre-existing dataset. 
 
