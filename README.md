@@ -100,7 +100,7 @@ Machine Learning Model Reference
 ================================
 ![tfkeras](https://user-images.githubusercontent.com/45768739/80434838-7ec29080-88c0-11ea-925a-9ea0aa53ca94.png)
 
-ASL uses [TensorFlow + Keras](https://www.tensorflow.org/guide/keras/overview) to power a Keras [Sequential](https://keras.io/getting-started/sequential-model-guide/) model. TensorFlow and Keras interface seemlessly, allowing for quick iteration, training, and testing models.
+ASL Assist uses [TensorFlow + Keras](https://www.tensorflow.org/guide/keras/overview) to power a Keras [Sequential](https://keras.io/getting-started/sequential-model-guide/) model. TensorFlow and Keras interface seemlessly, allowing for quick iteration, training, and testing models.
 
 For more information on TensorFlow + Keras for Python, see the official [documentation](https://www.tensorflow.org/guide/keras/overview). For more information on the Keras Sequential model, see the Keras [documentation](https://keras.io/models/sequential/).
 
