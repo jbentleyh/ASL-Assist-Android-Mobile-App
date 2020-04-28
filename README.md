@@ -38,13 +38,13 @@ pip install -r requirements.txt
 ```
 
 
-Please see the [readme](https://github.com/jbentleyh/Sign_Language_ML/blob/master/README.md) for more instructions on creating, training, and testing a machine learning model.
+Please see the [readme](https://github.com/jbentleyh/ASL-Machine-Learning/blob/master/README.md) for more instructions on creating, training, and testing a machine learning model.
 
 _Note: If using your own model, you need to [convert](https://www.tensorflow.org/lite/convert) your model to `.tflite` before installing the mobile application._
 
 Installing the Android Mobile App
 ---------------------------------
-To get started, let's clone the application [repository](https://github.com/jbentleyh/SignLangML_Android_Mobile_App).
+To get started, let's clone the application [repository](https://github.com/jbentleyh/ASL-Assist-Android-Mobile-App.git).
 
 To clone repository: 
 
