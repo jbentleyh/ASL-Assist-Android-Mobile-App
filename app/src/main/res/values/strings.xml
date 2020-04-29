@@ -18,6 +18,10 @@
     // Learning
     <string name="learning">Learning</string>
     <string name="learning_desc">Click Any Letter and View How To Sign It</string>
+    <string name="login">login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="signup">signup</string>
     <string-array name="letters">
         <item>A</item>
         <item>B</item>
