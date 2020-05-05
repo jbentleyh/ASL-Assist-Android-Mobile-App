@@ -34,6 +34,7 @@ class Classifier {
     private ByteBuffer imgData;
     private float[][] probArray;
 
+    //Constructor, opens tflite model and sets default parameters
     Classifier(Activity activity) throws IOException {
         MappedByteBuffer tfliteModel = FileUtil.loadMappedFile(activity, MODEL);
         Interpreter.Options tfliteOptions = new Interpreter.Options();
@@ -45,6 +46,7 @@ class Classifier {
         probArray = new float[1][labels.size()];
     }
 
+    //this method takes mat converts it to a format (bytebuffer) that is readable by the model, and runs it's predictions
     void classifyMat(Mat mat) {
         if (tflite != null) {
             convertMatToByteBuffer(mat);
@@ -52,14 +54,17 @@ class Classifier {
         }
     }
 
+    //returns the result of a prediction as a string
     String getResult() {
         return result;
     }
 
+    //returns the models assumed probability for the last prediction
     float getProbability() {
         return probability;
     }
 
+    //used to close the model when done interpreting to save system resources
     void close() {
         if (tflite != null) {
             tflite.close();
@@ -67,6 +72,8 @@ class Classifier {
         }
     }
 
+    //Image Processing
+    //Scaling, color correction and edge detection are applied to the mat
     Mat processMat(Mat mat) {
         float mh = mat.height();
         float cw = (float) Resources.getSystem().getDisplayMetrics().widthPixels;
@@ -83,14 +90,13 @@ class Classifier {
 
         Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(3, 3));
         Imgproc.dilate(edges, edges, element1);
-        //Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(2,2));
-        //Imgproc.erode(edges, edges, element);
 
         Core.rotate(edges, edges, Core.ROTATE_90_CLOCKWISE);
         Imgproc.resize(edges, edges, new Size(DIM_WIDTH, DIM_HEIGHT));
         return edges;
     }
 
+    //Used to show edge detection on display
     Mat debugMat(Mat mat) {
 
         Mat edges = new Mat(mat.size(), CvType.CV_8UC1);
@@ -98,12 +104,11 @@ class Classifier {
 
         Mat element1 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(3, 3));
         Imgproc.dilate(edges, edges, element1);
-        //Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new org.opencv.core.Size(2,2));
-        //Imgproc.erode(edges, edges, element);
 
         return edges;
     }
 
+    //returns a random label
     String getRandomLabel() {
         Random r = new Random();
         String rt = "";
@@ -112,6 +117,7 @@ class Classifier {
         return rt;
     }
 
+    //Converts mat to bytebuffer format which the model can use
     private void convertMatToByteBuffer(Mat mat) {
         imgData.rewind();
         for (int i = 0; i < DIM_HEIGHT; ++i) {
@@ -122,6 +128,7 @@ class Classifier {
         }
     }
 
+    //run the model against the processed image
     private void runInterface() {
         if (imgData != null) {
             tflite.run(imgData, probArray);
@@ -133,6 +140,9 @@ class Classifier {
         Log.d(TAG, "Guess: " + getResult());
     }
 
+    //sets result of the guess to label and probability.
+    //if the model is 80% or more confident it sets those values
+    //otherwise nothing is given
     private void processResults(float[] prob) {
         int max = 0;
         for (int i = 0; i < prob.length; ++i) {

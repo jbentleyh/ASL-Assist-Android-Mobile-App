@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SpeechToTextActivity extends AppCompatActivity {
 
+    //this feature remains to be implemented
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -13,6 +13,7 @@ public class LearningLettersActivity extends AppCompatActivity {
     ImageView letter;
 
     @Override
+    //This view sets the individual signs for learning inside of the learning activity view
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learning_letters);

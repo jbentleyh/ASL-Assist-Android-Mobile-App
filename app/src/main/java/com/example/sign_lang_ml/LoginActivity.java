@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Here we check or request camera access from the user
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -50,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
+        //set text fields to handle user data
         final TextView email = findViewById(R.id.emailTextView);
         final TextView pass = findViewById(R.id.passTextView);
         final TextView error = findViewById(R.id.errorTextView);
@@ -58,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //here we setup our request to the aws server to signup a new user
                 try {
                     RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
                     String URL = "http://ec2-18-191-120-168.us-east-2.compute.amazonaws.com/signup";
@@ -65,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                     jsonBody.put("email", email.getText().toString());
                     jsonBody.put("pass", pass.getText().toString());
                     final String requestBody = jsonBody.toString();
+
 
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
                         @Override
@@ -119,6 +124,8 @@ public class LoginActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //here we setup our request to the aws server to login an existing user
                 try {
                     RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
                     String URL = "http://ec2-18-191-120-168.us-east-2.compute.amazonaws.com:3000";

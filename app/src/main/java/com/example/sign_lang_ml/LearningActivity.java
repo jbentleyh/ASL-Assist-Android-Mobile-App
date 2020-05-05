@@ -13,6 +13,7 @@ public class LearningActivity extends AppCompatActivity {
 
     ListView listview;
 
+    //Here we use our layout view to set a container to display the learning information
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

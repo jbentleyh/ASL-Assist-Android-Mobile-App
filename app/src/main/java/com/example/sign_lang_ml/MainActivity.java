@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //here we check for camera permissions or request it if not present
         super.onCreate(savedInstanceState);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
                         MY_PERMISSIONS_REQUEST_CAMERA);
             }
         }
+        //here we check for storage access to save files / images
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Training button
         btn = findViewById(R.id.training);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
