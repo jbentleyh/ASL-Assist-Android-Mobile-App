@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
-                    String URL = "http://ec2-18-191-120-168.us-east-2.compute.amazonaws.com/signup";
+                    String URL = "http://ec2-18-191-120-168.us-east-2.compute.amazonaws.com:3000/signup";
                     JSONObject jsonBody = new JSONObject();
                     jsonBody.put("email", email.getText().toString());
                     jsonBody.put("pass", pass.getText().toString());
