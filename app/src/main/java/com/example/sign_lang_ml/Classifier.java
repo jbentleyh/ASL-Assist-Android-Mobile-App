@@ -22,10 +22,10 @@ import java.util.Random;
 
 class Classifier {
     private static final String TAG = "Tflite";
-    private static final String MODEL = "mobilenet2.tflite";
+    private static final String MODEL = "mobilenet.tflite";
     private static final String LABEL = "labels.txt";
-    private static final int DIM_HEIGHT = 100;
-    private static final int DIM_WIDTH = 100;
+    private static final int DIM_HEIGHT = 80;
+    private static final int DIM_WIDTH = 80;
     private static final int BYTES = 4;
     private static String result;
     private static float probability;
