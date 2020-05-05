@@ -6,8 +6,8 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="8"
-8-->/mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
+8-->B:\Code\school\ASL-Assist-Android-Mobile-App\openCVLibrary348\src\main\AndroidManifest.xml
 9        android:targetSdkVersion="29" />
-9-->/mnt/code/SignLangML_Android_Mobile_App/openCVLibrary348/src/main/AndroidManifest.xml
+9-->B:\Code\school\ASL-Assist-Android-Mobile-App\openCVLibrary348\src\main\AndroidManifest.xml
 10
 11</manifest>

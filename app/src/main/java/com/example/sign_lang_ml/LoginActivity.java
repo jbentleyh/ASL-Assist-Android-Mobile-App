@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        //set text fields to handle user data
+        //set text fields to handle user data and error messages
         final TextView email = findViewById(R.id.emailTextView);
         final TextView pass = findViewById(R.id.passTextView);
         final TextView error = findViewById(R.id.errorTextView);

@@ -22,6 +22,11 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="signup">signup</string>
+    <string name="show_edge_detection">Show edge detection</string>
+    <string name="force_frame_capture">force frame capture</string>
+    <string name="save_generated_text">save generated text</string>
+    <string name="show_debug_menu">Show debug menu</string>
+    <string name="show_help_alert">Show help alert</string>
     <string-array name="letters">
         <item>A</item>
         <item>B</item>

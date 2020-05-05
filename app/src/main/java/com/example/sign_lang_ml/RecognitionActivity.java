@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.method.ScrollingMovementMethod;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -55,6 +57,11 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
     private TextView probTextView;
     private TextView resultTextView;
     private AlertDialog dialog;
+//    private ImageButton debugButton;
+//    private ImageButton helpButton;
+//    private ImageButton captureButton;
+//    private ImageButton saveButton;
+//    private ImageButton edgeButton;
 
     private Boolean isDebug = false;
     private Boolean isEdge = false;
@@ -74,57 +81,75 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         }
     };
 
+    //set the assign vew id's to variables and set a few defaults
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final FrameLayout layout = new FrameLayout(this);
-        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT));
-        setContentView(layout);
+//        final FrameLayout layout = new FrameLayout(this);
+//        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+//                FrameLayout.LayoutParams.MATCH_PARENT));
+//        setContentView(layout);
+        setContentView(R.layout.activity_recognition);
+
 
         int mCameraIndex = 0;
-        openCvCameraView = new JavaCameraView(this, mCameraIndex);
+        openCvCameraView = findViewById(R.id.my_camera_view);
+//        openCvCameraView = new JavaCameraView(this, mCameraIndex);
         openCvCameraView.setCvCameraViewListener(RecognitionActivity.this);
         openCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        openCvCameraView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT));
-        layout.addView(openCvCameraView);
+//        openCvCameraView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+//                FrameLayout.LayoutParams.MATCH_PARENT));
+//        layout.addView(openCvCameraView);
 
-        buttonLayout = new LinearLayout(this);
-        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
-        debugLayout = new LinearLayout(this);
-        debugLayout.setOrientation(LinearLayout.HORIZONTAL);
+        buttonLayout = findViewById(R.id.buttonLayout);
+        debugLayout = findViewById(R.id.debugLayout);
+
+//        debugButton = findViewById(R.id.debugButton);
+//        helpButton = findViewById(R.id.helpButton);
+//        captureButton = findViewById(R.id.captureButton);
+//        saveButton = findViewById(R.id.saveButton);
+//        edgeButton = findViewById(R.id.edgeButton);
+
+
+//        buttonLayout = new LinearLayout(this);
+//        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+//        debugLayout = new LinearLayout(this);
+//        debugLayout.setOrientation(LinearLayout.HORIZONTAL);
         debugLayout.setVisibility(View.INVISIBLE);
-
+//
         debugLayout.addView(createButton(CAPTURE_BUTTON));
         debugLayout.addView(createButton(SAVE_BUTTON));
         debugLayout.addView(createButton(EDGE_BUTTON));
-        buttonLayout.addView(debugLayout);
+//        buttonLayout.addView(debugLayout);
         buttonLayout.addView(createButton(DEBUG_BUTTON));
         buttonLayout.addView(createButton(HELP_BUTTON));
-        buttonLayout.setPadding(25, 25, 25, 25);
-        buttonLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.BOTTOM + Gravity.END));
-        layout.addView(buttonLayout);
+//        buttonLayout.setPadding(25, 25, 25, 25);
+//        buttonLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+//                FrameLayout.LayoutParams.WRAP_CONTENT,
+//                Gravity.BOTTOM + Gravity.END));
+//        layout.addView(buttonLayout);
 
-        resultTextView = new TextView(this);
-        resultTextView.setTextColor(Color.WHITE);
-        resultTextView.setTextSize(20f);
-        resultTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.TOP + Gravity.CENTER_HORIZONTAL));
-        layout.addView(resultTextView);
 
-        probTextView = new TextView(this);
-        probTextView.setTextColor(Color.WHITE);
-        probTextView.setTextSize(20f);
-        probTextView.setPadding(0, 0, 0, BUTTON_SIZE + 150);
-        probTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.BOTTOM + Gravity.CENTER_HORIZONTAL));
-        layout.addView(probTextView);
+        resultTextView = findViewById(R.id.resultText);
+        probTextView = findViewById(R.id.probabilityText);
+
+//        resultTextView = new TextView(this);
+//        resultTextView.setTextColor(Color.WHITE);
+//        resultTextView.setTextSize(20f);
+//        resultTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+//                FrameLayout.LayoutParams.WRAP_CONTENT,
+//                Gravity.TOP + Gravity.CENTER_HORIZONTAL));
+//        layout.addView(resultTextView);
+//
+//        probTextView = new TextView(this);
+//        probTextView.setTextColor(Color.WHITE);
+//        probTextView.setTextSize(20f);
+//        probTextView.setPadding(0, 0, 0, BUTTON_SIZE + 150);
+//        probTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+//                FrameLayout.LayoutParams.WRAP_CONTENT,
+//                Gravity.BOTTOM + Gravity.CENTER_HORIZONTAL));
+//        layout.addView(probTextView);
 
         dialog = new AlertDialog.Builder(this)
                 .setTitle("Help")
@@ -142,6 +167,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
                 .create();
     }
 
+    //re-instantiate
     @Override
     public void onResume() {
         super.onResume();
@@ -166,6 +192,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         }
     }
 
+    //save resources when app is not in focus
     @Override
     public void onPause() {
         super.onPause();
@@ -178,6 +205,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         }
     }
 
+    //destructor to free memory
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -197,6 +225,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         if (mRGBA != null) mRGBA.release();
     }
 
+    /* Every (20 default) frame(s) gets passed to the interpreter for evaluation*/
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         float mh = mRGBA.height();
@@ -206,6 +235,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         mRGBA = inputFrame.rgba();
         frame = classifier.processMat(mRGBA);
 
+        //check for the proper interval
         if (!isDebug) {
             if (counter == CLASSIFY_INTERVAL) {
                 runInterpreter();
@@ -215,6 +245,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
             }
         }
 
+        //set up a visible edge where the model will be looking
         Imgproc.rectangle(mRGBA,
                 new Point(mRGBA.cols() / 2f - (mRGBA.cols() * scale / 2),
                         mRGBA.rows() / 2f - (mRGBA.cols() * scale / 2)),
@@ -229,9 +260,11 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         return mRGBA;
     }
 
+    //set button actions
     @Override
     public void onClick(View view) {
         switch ((String) view.getTag()) {
+            //The help button gives a brief description of how to use the app
             case HELP_BUTTON:
                 dialog.show();
                 TextView textView = dialog.findViewById(android.R.id.message);
@@ -240,14 +273,17 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
                 textView.setVerticalScrollBarEnabled(true);
                 textView.setMovementMethod(new ScrollingMovementMethod());
                 break;
+                //sets save state
             case SAVE_BUTTON:
                 isSave = !isSave;
                 setButton(SAVE_BUTTON, isSave);
                 break;
+                //sets if edge detection should be shown
             case EDGE_BUTTON:
                 isEdge = !isEdge;
                 setButton(EDGE_BUTTON, isEdge);
                 break;
+                //shows debug layout and menu
             case DEBUG_BUTTON:
                 isDebug = !isDebug;
                 if (isDebug) {
@@ -263,6 +299,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
                 }
                 setButton(DEBUG_BUTTON, isDebug);
                 break;
+                //force probability on this frame
             case CAPTURE_BUTTON:
                 try {
                     runInterpreter();
@@ -281,6 +318,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         }
     }
 
+    //create a new Image Button to be added to a view
     private ImageButton createButton(String tag) {
         ImageButton button = new ImageButton(this);
         button.setTag(tag);
@@ -299,6 +337,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         return button;
     }
 
+    //for buttons with toggle this changes the values /  image
     private void setButton(String tag, Boolean isOn) {
         String path = tag;
         if (isOn) {
@@ -314,6 +353,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         }
     }
 
+    //run predictions
     private void runInterpreter() {
         if (classifier != null) {
             classifier.classifyMat(frame);
