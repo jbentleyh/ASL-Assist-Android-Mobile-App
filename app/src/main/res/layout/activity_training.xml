@@ -6,15 +6,54 @@
     android:layout_height="match_parent"
     tools:context=".TrainingActivity">
 
-    <TextView
-        android:id="@+id/training_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/training"
-        android:textSize="40sp"
+    <org.opencv.android.JavaCameraView
+        android:id="@+id/trainingCam"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.103" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/result"
+        android:layout_width="408dp"
+        android:layout_height="116dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/resultText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal|top"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/score"
+        android:layout_width="412dp"
+        android:layout_height="111dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/trainingCam"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/scoreText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom|center_horizontal"
+            android:paddingLeft="0dp"
+            android:paddingTop="0dp"
+            android:paddingRight="0dp"
+            android:paddingBottom="30dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

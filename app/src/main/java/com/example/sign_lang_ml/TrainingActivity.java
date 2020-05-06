@@ -51,43 +51,26 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
         }
     };
 
+    //assign xml fields to objects and set default values
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final FrameLayout layout = new FrameLayout(this);
-        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT));
-        setContentView(layout);
+        setContentView(R.layout.activity_training);
 
         int mCameraIndex = 0;
-        openCvCameraView = new JavaCameraView(this, mCameraIndex);
+        openCvCameraView = findViewById(R.id.trainingCam);
         openCvCameraView.setCvCameraViewListener(com.example.sign_lang_ml.TrainingActivity.this);
         openCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        openCvCameraView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT));
-        layout.addView(openCvCameraView);
 
-        resultTextView = new TextView(this);
-        resultTextView.setTextColor(Color.WHITE);
-        resultTextView.setTextSize(20f);
-        resultTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.TOP + Gravity.CENTER_HORIZONTAL));
-        layout.addView(resultTextView);
+        resultTextView = findViewById(R.id.resultText);
 
-        scoreTextView = new TextView(this);
-        scoreTextView.setTextColor(Color.WHITE);
-        scoreTextView.setTextSize(20f);
+        scoreTextView = findViewById(R.id.scoreText);
         String s = "Score: " + score + "!";
         scoreTextView.setText(s);
-        scoreTextView.setPadding(0, 0, 0, 225);
-        scoreTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.BOTTOM + Gravity.CENTER_HORIZONTAL));
-        layout.addView(scoreTextView);
     }
 
+    //resume processes on app re-focus
     @Override
     public void onResume() {
         super.onResume();
@@ -114,6 +97,7 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
         }
     }
 
+    //suspend resources when app is not in focus
     @Override
     public void onPause() {
         super.onPause();
@@ -126,6 +110,7 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
         }
     }
 
+    //destroy objects to free resources on destruction
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -145,6 +130,7 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
         if (mRGBA != null) mRGBA.release();
     }
 
+    //every (20 default) frame(s) run the intepreter on the frame
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         float mh = mRGBA.height();
@@ -161,6 +147,7 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
             counter++;
         }
 
+        //draw the rectangle to show where hand should be placed in the image
         Imgproc.rectangle(mRGBA,
                 new Point(mRGBA.cols() / 2f - (mRGBA.cols() * scale / 2),
                         mRGBA.rows() / 2f - (mRGBA.cols() * scale / 2)),
@@ -172,6 +159,7 @@ public class TrainingActivity extends AppCompatActivity implements CameraBridgeV
         return mRGBA;
     }
 
+    //run predictions and sets / updates score
     private void runInterpreter() {
         if (classifier != null) {
             classifier.classifyMat(frame);

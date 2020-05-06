@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                 //here we setup our request to the aws server to signup a new user
                 try {
                     RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
-                    String URL = "http://ec2-18-191-120-168.us-east-2.compute.amazonaws.com/signup";
+                    String URL = "http://ec2-18-191-120-168.us-east-2.compute.amazonaws.com:3000/signup";
                     JSONObject jsonBody = new JSONObject();
                     jsonBody.put("email", email.getText().toString());
                     jsonBody.put("pass", pass.getText().toString());
@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError err) {
                             Log.e("VOLLEY", err.toString());
                             error.setVisibility(View.VISIBLE);
-                            error.setText("Invalid email or email is already in use.");
+                            error.setText("Invalid email is already in use.");
                         }
                     }) {
                         @Override

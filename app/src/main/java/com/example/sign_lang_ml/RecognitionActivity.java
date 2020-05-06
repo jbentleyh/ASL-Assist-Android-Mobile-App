@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.method.ScrollingMovementMethod;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -54,14 +52,10 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
 
     private LinearLayout buttonLayout;
     private LinearLayout debugLayout;
+    private LinearLayout textBackground;
     private TextView probTextView;
     private TextView resultTextView;
     private AlertDialog dialog;
-//    private ImageButton debugButton;
-//    private ImageButton helpButton;
-//    private ImageButton captureButton;
-//    private ImageButton saveButton;
-//    private ImageButton edgeButton;
 
     private Boolean isDebug = false;
     private Boolean isEdge = false;
@@ -86,70 +80,66 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        final FrameLayout layout = new FrameLayout(this);
-//        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-//                FrameLayout.LayoutParams.MATCH_PARENT));
-//        setContentView(layout);
-        setContentView(R.layout.activity_recognition);
+        final FrameLayout layout = new FrameLayout(this);
+        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
+        setContentView(layout);
 
 
         int mCameraIndex = 0;
-        openCvCameraView = findViewById(R.id.my_camera_view);
-//        openCvCameraView = new JavaCameraView(this, mCameraIndex);
+        openCvCameraView = new JavaCameraView(this, mCameraIndex);
         openCvCameraView.setCvCameraViewListener(RecognitionActivity.this);
         openCvCameraView.setVisibility(SurfaceView.VISIBLE);
-//        openCvCameraView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-//                FrameLayout.LayoutParams.MATCH_PARENT));
-//        layout.addView(openCvCameraView);
+        openCvCameraView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
+        layout.addView(openCvCameraView);
 
-        buttonLayout = findViewById(R.id.buttonLayout);
-        debugLayout = findViewById(R.id.debugLayout);
+        buttonLayout = new LinearLayout(this);
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+        debugLayout = new LinearLayout(this);
+        debugLayout.setOrientation(LinearLayout.HORIZONTAL);
+        textBackground = new LinearLayout(this);
+        textBackground.setOrientation(LinearLayout.HORIZONTAL);
 
-//        debugButton = findViewById(R.id.debugButton);
-//        helpButton = findViewById(R.id.helpButton);
-//        captureButton = findViewById(R.id.captureButton);
-//        saveButton = findViewById(R.id.saveButton);
-//        edgeButton = findViewById(R.id.edgeButton);
-
-
-//        buttonLayout = new LinearLayout(this);
-//        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
-//        debugLayout = new LinearLayout(this);
-//        debugLayout.setOrientation(LinearLayout.HORIZONTAL);
         debugLayout.setVisibility(View.INVISIBLE);
-//
+
         debugLayout.addView(createButton(CAPTURE_BUTTON));
         debugLayout.addView(createButton(SAVE_BUTTON));
         debugLayout.addView(createButton(EDGE_BUTTON));
-//        buttonLayout.addView(debugLayout);
         buttonLayout.addView(createButton(DEBUG_BUTTON));
         buttonLayout.addView(createButton(HELP_BUTTON));
-//        buttonLayout.setPadding(25, 25, 25, 25);
-//        buttonLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-//                FrameLayout.LayoutParams.WRAP_CONTENT,
-//                Gravity.BOTTOM + Gravity.END));
-//        layout.addView(buttonLayout);
 
+        buttonLayout.addView(debugLayout);
+        buttonLayout.setPadding(25, 25, 25, 25);
+        buttonLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP + Gravity.START));
+        layout.addView(buttonLayout);
 
-        resultTextView = findViewById(R.id.resultText);
-        probTextView = findViewById(R.id.probabilityText);
+        textBackground.setBackgroundColor(Color.WHITE);
+        textBackground.setPadding(0, 0, 0, 125);
+        textBackground.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM + Gravity.CENTER_HORIZONTAL));
 
-//        resultTextView = new TextView(this);
-//        resultTextView.setTextColor(Color.WHITE);
-//        resultTextView.setTextSize(20f);
-//        resultTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-//                FrameLayout.LayoutParams.WRAP_CONTENT,
-//                Gravity.TOP + Gravity.CENTER_HORIZONTAL));
-//        layout.addView(resultTextView);
-//
-//        probTextView = new TextView(this);
-//        probTextView.setTextColor(Color.WHITE);
-//        probTextView.setTextSize(20f);
-//        probTextView.setPadding(0, 0, 0, BUTTON_SIZE + 150);
-//        probTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-//                FrameLayout.LayoutParams.WRAP_CONTENT,
-//                Gravity.BOTTOM + Gravity.CENTER_HORIZONTAL));
-//        layout.addView(probTextView);
+        resultTextView = new TextView(this);
+        resultTextView.setTextColor(Color.BLACK);
+        resultTextView.setTextSize(20f);
+        resultTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                Gravity.BOTTOM + Gravity.CENTER));
+
+        textBackground.addView(resultTextView);
+        layout.addView(textBackground);
+
+        probTextView = new TextView(this);
+        probTextView.setTextColor(Color.WHITE);
+        probTextView.setTextSize(20f);
+        probTextView.setPadding(0, 0, 0, BUTTON_SIZE + 150);
+        probTextView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.CENTER + Gravity.CENTER_HORIZONTAL));
+        layout.addView(probTextView);
 
         dialog = new AlertDialog.Builder(this)
                 .setTitle("Help")
@@ -167,7 +157,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
                 .create();
     }
 
-    //re-instantiate
+    //re-instantiate when app is re-opened
     @Override
     public void onResume() {
         super.onResume();
@@ -353,7 +343,7 @@ public class RecognitionActivity extends AppCompatActivity implements CameraBrid
         }
     }
 
-    //run predictions
+    //run predictions and sets output text and probability value
     private void runInterpreter() {
         if (classifier != null) {
             classifier.classifyMat(frame);
