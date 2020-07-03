@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sign_lang_ml">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!--<uses-permission android:name="android.permission.INTERNET" />-->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -23,15 +23,12 @@
         <activity android:name=".SpeechToTextActivity" />
         <activity android:name=".TrainingActivity" />
         <activity android:name=".RecognitionActivity" />
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".LoginActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
         <meta-data
             android:name="preloaded_fonts"
