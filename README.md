@@ -2,6 +2,8 @@
 
 _ASL Assist (American Sign Language Assistant)_ is an Android mobile application that utilizes machine learning and computer vision written in Python to let users use their personal phone camera to recognize and communicate the American sign language alphabet. 
 
+![asl_demo_final](https://user-images.githubusercontent.com/45768739/92667545-d2fb6980-f2d1-11ea-9e52-4cc05a8f7eb9.gif)
+
 Table of Contents
 =================
 <!--ts-->
